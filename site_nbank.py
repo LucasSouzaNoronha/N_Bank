@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, jsonify
 import main
 import json
 from database import Banco
@@ -41,7 +41,19 @@ def agencia():
 @app.route('/conta', methods=['GET', 'POST'])
 def conta():
     if request.method == 'GET':
-        return render_template('conta.html')
+        try:
+            conn = banco.conectar()
+            cur = conn.cursor()
+            cur.execute("SELECT numero_agencia, municipio FROM agencias")
+            agencias = cur.fetchall()
+            cur.close()
+            conn.close()
+        except Exception as e:
+            agencias = []
+            print(f"Erro ao buscar agências: {e}")
+
+        return render_template('conta.html', agencias=agencias)
+
     elif request.method == 'POST':
         json_input = request.get_json() or {}
         resultado = main.conta(json_input)
