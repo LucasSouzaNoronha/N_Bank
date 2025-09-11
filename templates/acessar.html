@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Acesso à Conta{% endblock %}
+{% block content %}
+<div class="homepage-banner">
+    <h2>Acesso à Conta</h2>
+</div>
+<form id="acessoForm">
+    <div class="form-group">
+        <label for="agencia">Agência:</label>
+        <input type="text" id="agencia" name="agencia" required>
+    </div>
+    <div class="form-group">
+        <label for="conta">Conta:</label>
+        <input type="text" id="conta" name="conta" required>
+    </div>
+    <div class="form-group">
+        <label for="senha">Senha:</label>
+        <input type="password" id="senha" name="senha" required>
+    </div>
+    <button type="submit">Acessar</button>
+</form>
+<div class="msg" id="resultado"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('acessoForm').onsubmit = async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const data = {
+            agencia: form.agencia.value,
+            conta: form.conta.value,
+            senha: form.senha.value
+        };
+        const response = await fetch('/acessar', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        const msgDiv = document.getElementById('resultado');
+        msgDiv.textContent = result.mensagem;
+        
+        if (result.status === 'sucesso') {
+            msgDiv.style.color = 'green';
+            // Redireciona para uma página após o login bem-sucedido
+            // Substitua '/dashboard' pela rota da sua página de operações
+            window.location.href = '/dashboard'; 
+        } else {
+            msgDiv.style.color = 'red';
+        }
+    }
+</script>
+{% endblock %}

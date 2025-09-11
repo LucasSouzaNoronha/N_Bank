@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Consulta de Saldo{% endblock %}
+{% block content %}
+<div class="homepage-banner">
+    <h2>Consulta de Saldo</h2>
+</div>
+<form id="saldoForm">
+    <div class="form-group-full">
+        <label for="senha">Sua Senha:</label>
+        <input type="password" id="senha" name="senha" required>
+    </div>
+    <button type="submit">Consultar Saldo</button>
+</form>
+<div class="msg" id="resultado"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('saldoForm').onsubmit = async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const data = {
+            senha: form.senha.value
+        };
+        const response = await fetch('/saldo', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        const msgDiv = document.getElementById('resultado');
+        
+        if (result.status === 'sucesso') {
+            msgDiv.textContent = `Seu saldo atual é: R$ ${result.saldo_atual}`;
+            msgDiv.style.color = 'green';
+        } else {
+            msgDiv.textContent = result.mensagem;
+            msgDiv.style.color = 'red';
+        }
+    }
+</script>
+{% endblock %}

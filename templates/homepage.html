@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Página Inicial{% endblock %}
+{% block content %}
+<div class="homepage-banner">
+    <h1>Bem-vindo ao N Bank</h1>
+    <p>O único banco que rende menos que a poupança!</p>
+</div>
+<p style="text-align:center;">Escolha uma das opções no menu abaixo para começar.</p>
+<nav class="homepage-nav">
+    <ul>
+        <li><a href="/correntista">Cadastrar Correntista</a></li>
+        <li><a href="/agencia">Cadastrar Agência</a></li>
+        <li><a href="/conta">Cadastrar Conta</a></li>
+        <li><a href="/acessar">Acesso à Conta</a></li>
+    </ul>
+</nav>
+{% endblock %}

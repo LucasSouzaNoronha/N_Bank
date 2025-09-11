@@ -1,0 +1,22 @@
+# Ambiente virtual
+.venv/
+env/
+.nbank/
+
+# Cache Python
+__pycache__/
+*.pyc
+
+# VS Code
+.vscode/
+
+# Banco de dados local
+*.sqlite3
+*.db
+
+# Configuração local
+*.env
+
+teste.pbix
+
+main22.py

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="homepage-banner">
+    <h2>Área do Cliente</h2>
+</div>
+<p style="text-align:center;">Bem-vindo(a) de volta!</p>
+<nav class="homepage-nav">
+    <ul>
+        <li><a href="/depositar">Depositar</a></li>
+        <li><a href="/transferencia">Transferir</a></li>
+        <li><a href="/saldo">Consultar Saldo</a></li>
+    </ul>
+</nav>
+<div style="text-align:center; margin-top: 30px;">
+    <a href="/logout" class="back-button">Sair</a>
+</div>
+{% endblock %}
