@@ -189,10 +189,8 @@ def depositar(entrada_json):
         except Exception as erro_banco:
             return json.dumps({"status": "erro", "mensagem": f"Erro ao conectar ao banco de dados: {erro_banco}"})
         
-        # Cria o objeto Conta com a senha fornecida
         conta_obj = cl.Conta(agencia, conta, senha)
         
-        # Acessa a conta para verificar a senha antes do depósito
         acesso = conta_obj.acessar(conta, cur)
         
         if not acesso:

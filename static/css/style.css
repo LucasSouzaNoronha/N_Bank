@@ -13,9 +13,9 @@ body { font-family: Arial, Helvetica, sans-serif; background: #f5f5f5; }
 }
 
 h2 {
-    font-size: 30px; /* Altere o valor para o tamanho desejado */
-    font-weight: bold; /* Opcional: ajuste o peso da fonte */
-    text-align: center; /* Opcional: centraliza o texto */
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
 }
 
 /* Estilo do botão de voltar */

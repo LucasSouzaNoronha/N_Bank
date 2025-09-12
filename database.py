@@ -1,6 +1,5 @@
 import psycopg2
 import hashlib
-# Mapeamento de DDDs para UFs do Brasil
 uf_ddd_map = {
     "AC": 68,
     "AL": 82,

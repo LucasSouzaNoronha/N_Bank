@@ -15,7 +15,6 @@ def home():
 
 @app.route('/dashboard')
 def dashboard():
-    # Verifica se o usuário está logado
     if 'agencia' not in session:
         return redirect(url_for('acessar'))
     return render_template('dashboard.html')
