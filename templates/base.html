@@ -9,12 +9,12 @@
 </head>
 <body>
     <div class="container">
-        {% block content %}
-        {% endblock %}
-        <div style="text-align:center; margin-top: 30px;">
-            <a href="/dashboard" class="back-button">Voltar ao Dashboard</a>
-        </div>
+        {% if request.path != '/dashboard' %}
+            <a href="/dashboard" class="back-button">← Voltar</a>
+        {% endif %}
+        {% block content %}{% endblock %}
     </div>
-    {% block scripts %}{% endblock %}
+</div>
+{% block scripts %}{% endblock %}
 </body>
 </html>
