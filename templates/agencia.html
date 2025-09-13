@@ -6,39 +6,74 @@
 </div>
 <form id="agenciaForm">
     <div class="form-group">
-        <label for="uf">UF:</label>
-        <input type="text" id="uf" name="uf" maxlength="2" required>
-    </div>
-    <div class="form-group">
-        <label for="municipio">Município:</label>
-        <input type="text" id="municipio" name="municipio" required>
-    </div>
-    <div class="form-group-full">
-        <label for="endereco">Endereço:</label>
-        <input type="text" id="endereco" name="endereco" required>
-    </div>
-    <div class="form-group">
         <label for="cep">CEP:</label>
         <input type="text" id="cep" name="cep" maxlength="8" required>
     </div>
+    <div class="form-group">
+        <label for="uf">UF:</label>
+        <input type="text" id="uf" name="uf" maxlength="2" readonly required>
+    </div>
+<div class="form-group-row">
+    <div class="form-group">
+        <label for="endereco">Endereço:</label>
+        <input type="text" id="endereco" name="endereco" readonly required>
+    </div>
+    <div class="form-group">
+        <label for="numero">Número:</label>
+        <input type="text" id="numero" name="numero" required>
+    </div>
+    <div class="form-group">
+        <label for="municipio">Município:</label>
+        <input type="text" id="municipio" name="municipio" readonly required>
+    </div>
+</div>
     <button type="submit">Cadastrar</button>
 </form>
 <div class="msg" id="resultado"></div>
 {% endblock %}
 {% block scripts %}
 <script>
-    document.getElementById('agenciaForm').onsubmit = async function(e) {
+    const cepInput = document.getElementById('cep');
+
+    cepInput.addEventListener('input', function () {
+        this.value = this.value.replace(/\D/g, '');
+
+        if (this.value.length === 8) {
+            buscarEndereco(this.value);
+        }
+    });
+
+    async function buscarEndereco(cep) {
+        const response = await fetch('/buscar_cep', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cep })
+        });
+
+        const data = await response.json();
+
+        if (data.erro) {
+            alert(data.erro);
+        } else {
+            document.getElementById('municipio').value = data.localidade || '';
+            document.getElementById('uf').value = data.uf || '';
+            document.getElementById('endereco').value = data.logradouro || '';
+        }
+    }
+
+    document.getElementById('agenciaForm').onsubmit = async function (e) {
         e.preventDefault();
         const form = e.target;
+        const enderecoCompleto = `${form.endereco.value}, ${form.numero.value}`;
         const data = {
             uf: form.uf.value,
             municipio: form.municipio.value,
-            endereco: form.endereco.value,
+            endereco: enderecoCompleto,
             cep: form.cep.value
         };
         const response = await fetch('/agencia', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
         const result = await response.json();
@@ -47,11 +82,11 @@
         if (result.status === 'sucesso') {
             msgDiv.innerText = `${result.mensagem} O número da agência é: ${result.numero_agencia}`;
             msgDiv.style.color = 'green';
-            form.reset(); // Limpa os campos do formulário
+            form.reset();
         } else {
             msgDiv.innerText = result.mensagem;
             msgDiv.style.color = 'red';
         }
-    }
+    };
 </script>
 {% endblock %}

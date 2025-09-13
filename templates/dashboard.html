@@ -12,6 +12,9 @@
                 <h2>Área do Cliente</h2>
             </div>
         <p style="text-align:center;">Bem-vindo(a) de volta!</p>
+        <div id="saldo" style="font-size: 18px; font-weight: bold; margin-top: 20px;">
+            Carregando saldo...
+        </div>
         <nav class="homepage-nav">
             <ul>
                 <li><a href="/depositar">Depositar</a></li>
@@ -23,4 +26,26 @@
             <a href="/logout" class="back-button">Sair</a>
         </div>
     </body>
+    <script>
+    async function buscarSaldo() {
+        const response = await fetch('/saldo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                agencia: "{{ session['agencia'] }}",
+                conta: "{{ session['conta'] }}"
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'sucesso') {
+            document.getElementById('saldo').textContent = `Saldo: R$ ${data.saldo}`;
+        } else {
+            document.getElementById('saldo').textContent = data.mensagem;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', buscarSaldo);
+</script>
 </html>

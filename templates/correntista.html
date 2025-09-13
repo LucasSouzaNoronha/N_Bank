@@ -14,22 +14,6 @@
         <input type="text" id="nome" name="nome" required>
     </div>
     <div class="form-group">
-        <label for="uf">UF:</label>
-        <input type="text" id="uf" name="uf" required maxlength="2" pattern="[A-Za-z]{2}">
-    </div>
-    <div class="form-group">
-        <label for="municipio">Município:</label>
-        <input type="text" id="municipio" name="municipio" required>
-    </div>
-    <div class="form-group-full">
-        <label for="endereco">Endereço:</label>
-        <input type="text" id="endereco" name="endereco" required>
-    </div>
-    <div class="form-group">
-        <label for="cep">CEP:</label>
-        <input type="text" id="cep" name="cep" required maxlength="8" pattern="\d{8}">
-    </div>
-    <div class="form-group">
         <label for="nascimento">Data de Nascimento:</label>
         <input type="date" id="nascimento" name="nascimento" required>
     </div>
@@ -42,6 +26,28 @@
             <option value="O">Outro</option>
         </select>
     </div>
+    <div class="form-group">
+        <label for="cep">CEP:</label>
+        <input type="text" id="cep" name="cep" required maxlength="8" pattern="\d{8}">
+    </div>
+    <div class="form-group">
+        <label for="uf">UF:</label>
+        <input type="text" id="uf" name="uf" required readonly>
+    </div>
+<div class="form-group-row">
+    <div class="form-group">
+        <label for="endereco">Endereço:</label>
+        <input type="text" id="endereco" name="endereco" required readonly>
+    </div>
+    <div class="form-group">
+        <label for="numero">Número:</label>
+        <input type="text" id="numero" name="numero" required>
+    </div>
+    <div class="form-group">
+        <label for="municipio">Município:</label>
+        <input type="text" id="municipio" name="municipio" required readonly>
+    </div>
+</div>
     <button type="submit">Cadastrar</button>
 </form>
 <div class="msg" id="msg"></div>
@@ -49,29 +55,58 @@
 
 {% block scripts %}
 <script>
-    document.getElementById('correntistaForm').onsubmit = async function(e) {
+    const cepInput = document.getElementById('cep');
+
+    cepInput.addEventListener('input', function () {
+        this.value = this.value.replace(/\D/g, '');
+
+        if (this.value.length === 8) {
+            buscarEndereco(this.value);
+        }
+    });
+
+    async function buscarEndereco(cep) {
+        const response = await fetch('/buscar_cep', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cep })
+        });
+
+        const data = await response.json();
+
+        if (data.erro) {
+            alert(data.erro);
+        } else {
+            document.getElementById('municipio').value = data.localidade || '';
+            document.getElementById('uf').value = data.uf || '';
+            document.getElementById('endereco').value = data.logradouro || '';
+        }
+    }
+
+    document.getElementById('correntistaForm').onsubmit = async function (e) {
         e.preventDefault();
         const form = e.target;
+        const enderecoCompleto = `${form.endereco.value}, ${form.numero.value}`;
         const data = {
             cpf: form.cpf.value,
             nome: form.nome.value,
             uf: form.uf.value,
             municipio: form.municipio.value,
-            endereco: form.endereco.value,
+            endereco: enderecoCompleto,
             cep: form.cep.value,
             nascimento: form.nascimento.value,
             sexo: form.sexo.value
         };
         const resp = await fetch('/correntista', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
         const result = await resp.json();
         const msgDiv = document.getElementById('msg');
         msgDiv.textContent = result.mensagem;
         msgDiv.style.color = result.status === 'sucesso' ? 'green' : 'red';
-        if(result.status === 'sucesso') form.reset();
+        if (result.status === 'sucesso') form.reset();
     };
 </script>
 {% endblock %}

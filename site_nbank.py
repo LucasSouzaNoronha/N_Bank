@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, session, redirect, url_for, j
 import main
 import json
 from database import Banco
+from services.requisicoes import buscar_cep
 
 banco = Banco()
 banco.criar_banco()
@@ -70,6 +71,7 @@ def acessar():
         if resultado_dict.get('status') == 'sucesso':
             session['agencia'] = json_input.get('agencia')
             session['conta'] = json_input.get('conta')
+            session['senha'] = json_input.get('senha')
         
         return resultado
 
@@ -77,6 +79,7 @@ def acessar():
 def logout():
     session.pop('agencia', None)
     session.pop('conta', None)
+    session.pop('senha', None)
     return redirect(url_for('home'))
 
 @app.route('/transferencia', methods=['GET', 'POST'])
@@ -113,22 +116,22 @@ def depositar():
         resultado = main.depositar(json_input)
         return resultado
 
-@app.route('/saldo', methods=['GET', 'POST'])
+@app.route('/saldo', methods=['POST'])
 def saldo():
-    if request.method == 'GET':
-        if 'agencia' not in session or 'conta' not in session:
-            return redirect(url_for('acessar'))
-        return render_template('saldo.html')
-    elif request.method == 'POST':
-        if 'agencia' not in session or 'conta' not in session:
-            return json.dumps({"status": "erro", "mensagem": "É necessário estar logado para consultar o saldo."})
+    json_input = {"agencia": session.get('agencia'),
+                  "conta": session.get('conta'),
+                  "senha": session.get('senha')}
 
-        json_input = request.get_json() or {}
-        json_input['agencia'] = session.get('agencia')
-        json_input['conta'] = session.get('conta')
+    resultado = main.saldo(json_input)
+    return resultado
 
-        resultado = main.saldo(json_input)
-        return resultado
+@app.route('/buscar_cep', methods=['POST'])
+def buscar_cep_route():
+    data = request.get_json()
+    cep = data.get('cep')
+    
+    resultado = buscar_cep(cep)
+    return jsonify(resultado)
 
 if __name__ == '__main__':
     app.run(debug=True)

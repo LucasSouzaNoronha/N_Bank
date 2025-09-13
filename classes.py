@@ -27,7 +27,6 @@ class Cliente:
             self.sexo.upper()
         )
         cur.execute(sql, valores)
-        conn.commit()
     
 class Agencia:
     def __init__(self,agencia,uf,municipio,rua,cep):
@@ -49,7 +48,6 @@ class Agencia:
             str(self.cep).zfill(8)
         )
         cur.execute(sql, valores)
-        conn.commit()
         
 class Conta:
     def __init__(self, agencia, conta, senha_conta=None, cpf=None):
@@ -62,7 +60,6 @@ class Conta:
         sql = """INSERT INTO contas (cpf,numero_agencia,saldo,hash,numero_conta)
                  VALUES (%s,%s,%s,%s,%s)"""
         cur.execute(sql, (self.cpf, self.agencia, 0, self.senha_conta, self.conta))
-        conn.commit()
 
     def acessar(self, conta, cur):
         cur.execute("""SELECT hash FROM contas
@@ -73,7 +70,7 @@ class Conta:
             return False
         return self.senha_conta == row[0]
         
-    def saque_conta(self, conn, cur, conta, valor, mensagem=None):
+    def saque_conta(self, cur, conta, valor):
         cur.execute("""UPDATE contas
                           SET saldo = saldo - %s
                           WHERE numero_agencia = %s AND numero_conta = %s AND saldo >= %s
@@ -82,17 +79,15 @@ class Conta:
         row = cur.fetchone()
         if not row:
             return None
-        conn.commit()
         return float(row[0])
             
-    def deposito(self, conn, cur, conta, valor, mensagem=None):
+    def deposito(self, cur, conta, valor):
         cur.execute("""UPDATE contas
                           SET saldo = saldo + %s
                           WHERE numero_agencia = %s AND numero_conta = %s
                           RETURNING saldo""",
                        (valor, self.agencia, conta))
         row = cur.fetchone()
-        conn.commit()
         return float(row[0]) if row else None
     
     def saldo(self, cur, conta):

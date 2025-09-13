@@ -2,16 +2,16 @@ version: '3.8'
 
 services:
   postgres:
-    image: bitnami/postgresql:latest
+    image: postgres:latest
     container_name: postgres_db
     environment:
-      POSTGRES_USER: teste
-      POSTGRES_PASSWORD: teste
-      POSTGRES_DB: teste
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: Senha1234
+      POSTGRES_DB: N_Bank_db
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/bitnami/postgresql
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
   postgres_data:

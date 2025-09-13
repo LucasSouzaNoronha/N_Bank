@@ -156,11 +156,12 @@ def transferencia(entrada_json):
         acesso = conta_obj.acessar(conta_origem, cur)
         if not acesso:
             return json.dumps({"status": "erro", "mensagem": "Acesso negado."})
-        saldo_atual = conta_obj.saque_conta(conn, cur, conta_origem, valor)
+        saldo_atual = conta_obj.saque_conta(cur, conta_origem, valor)
         if saldo_atual is None:
             return json.dumps({"status": "erro", "mensagem": "Saldo insuficiente."})
-        mensagem_transferencia = f"Transferência realizada para a Conta {conta_destino} na Agência {agencia_destino}. Saldo atual R${saldo_atual}"
-        conta_dest.deposito(conn, cur, conta_destino, valor, mensagem_transferencia)
+        conta_dest.deposito(cur, conta_destino, valor)
+        conn.commit()
+        conn.close()
         return json.dumps({"status": "sucesso", "mensagem": "Transferência realizada com sucesso.", "saldo_atual": saldo_atual})
     except Exception as erro:
         return json.dumps({"status": "erro", "mensagem": str(erro)})
@@ -195,9 +196,10 @@ def depositar(entrada_json):
         
         if not acesso:
             return json.dumps({"status": "erro", "mensagem": "Acesso negado. Senha incorreta."})
-            
-        conta_obj.deposito(conn, cur, conta, valor, "Deposito realizado com sucesso")
-        
+
+        conta_obj.deposito(cur, conta, valor)
+        conn.commit()
+        conn.close()
         return json.dumps({"status": "sucesso", "mensagem": "Deposito realizado com sucesso."})
     except Exception as erro:
         return json.dumps({"status": "erro", "mensagem": str(erro)})
@@ -226,6 +228,6 @@ def saldo(entrada_json):
         if not acesso:
             return json.dumps({"status": "erro", "mensagem": "Acesso negado."})
         saldo_atual = conta_obj.saldo(cur, conta)
-        return json.dumps({"status": "sucesso", "mensagem": "Saldo obtido com sucesso.", "saldo_atual": saldo_atual})
+        return json.dumps({"status": "sucesso", "saldo": saldo_atual})
     except Exception as erro:
         return json.dumps({"status": "erro", "mensagem": str(erro)})

@@ -33,9 +33,9 @@ uf_ddd_map = {
 class Banco:
     def __init__(self):
         # Parâmetros do docker-compose.yml
-        self.dbname = "teste"
-        self.user = "teste"
-        self.password = "teste"
+        self.dbname = "N_Bank_db"
+        self.user = "admin"
+        self.password = "Senha1234"
         self.host = "localhost"
         self.port = 5432
 
