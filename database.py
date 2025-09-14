@@ -36,7 +36,7 @@ class Banco:
         self.dbname = "N_Bank_db"
         self.user = "admin"
         self.password = "Senha1234"
-        self.host = "localhost"
+        self.host = "postgres"
         self.port = 5432
 
     def criar_banco(self):

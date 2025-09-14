@@ -31,8 +31,13 @@ def correntista(entrada_json):
                 cur = conn.cursor()
             except Exception as erro_banco:
                 return json.dumps({"status": "erro", "mensagem": f"Erro ao conectar ao banco de dados: {erro_banco}"})
-            cliente.salvar(conn, cur)
-            return json.dumps({"status": "sucesso", "mensagem": "Correntista salvo com sucesso."})
+            try:
+                cliente.salvar(conn, cur)
+                conn.commit()
+                cur.close()
+                return json.dumps({"status": "sucesso", "mensagem": "Correntista salvo com sucesso."})
+            except Exception as erro_salvar:
+                return json.dumps({"status": "erro", "mensagem": f"Erro ao salvar correntista: {erro_salvar}"})
         else:
             return json.dumps({"status": "erro", "mensagem": "CPF inválido. Corrija e tente novamente."})
     except Exception as erro:
