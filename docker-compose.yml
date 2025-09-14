@@ -8,10 +8,28 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: Senha1234
       POSTGRES_DB: N_Bank_db
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  flask_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flask_app
+    ports:
+      - "5000:5000"
+    environment:
+      FLASK_ENV: development
+    depends_on:
+      - postgres
+    networks:
+      - nbank_network
+    restart: always
 
 volumes:
   postgres_data:
+
+networks:
+  nbank_network:
+    driver: bridge
