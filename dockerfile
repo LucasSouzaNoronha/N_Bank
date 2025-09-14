@@ -20,4 +20,4 @@ COPY . .
 EXPOSE 5000
 
 # Comando para iniciar sua aplicação
-CMD ["python", "site_nbank.py"]
+CMD ["python", "site_n_bank.py", "--host=0.0.0.0", "--port=5000"]
