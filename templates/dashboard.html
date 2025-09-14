@@ -27,24 +27,30 @@
         </div>
     </body>
     <script>
-    async function buscarSaldo() {
-        const response = await fetch('/saldo', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                agencia: "{{ session['agencia'] }}",
-                conta: "{{ session['conta'] }}"
-            })
-        });
+        async function buscarSaldo() {
+            const response = await fetch('/saldo', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    agencia: "{{ session['agencia'] }}",
+                    conta: "{{ session['conta'] }}"
+                })
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (data.status === 'sucesso') {
-            document.getElementById('saldo').textContent = `Saldo: R$ ${data.saldo}`;
-        } else {
-            document.getElementById('saldo').textContent = data.mensagem;
+            if (data.status === 'sucesso') {
+                // Formata o saldo no formato brasileiro
+                const saldoFormatado = new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                }).format(data.saldo);
+
+                document.getElementById('saldo').textContent = `Saldo: ${saldoFormatado}`;
+            } else {
+                document.getElementById('saldo').textContent = data.mensagem;
+            }
         }
-    }
 
     document.addEventListener('DOMContentLoaded', buscarSaldo);
 </script>
