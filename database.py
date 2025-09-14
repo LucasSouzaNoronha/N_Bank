@@ -100,12 +100,13 @@ class Banco:
     
 def gerar_hash_senha(senha_conta):
     return hashlib.sha256(senha_conta.encode('utf-8')).hexdigest()
+
 def pesquisar_nome_cliente(cur, agencia, conta):
     cur.execute("""
-    SELECT c.nome_completo
-    FROM clientes c
-    JOIN contas co ON c.cpf = co.cpf
-    WHERE co.numero_agencia = %s AND co.numero_conta = %s
+    SELECT clientes.nome_completo
+    FROM contas
+    JOIN clientes ON contas.cpf = clientes.cpf
+    WHERE contas.numero_agencia = %s AND contas.numero_conta = %s
     """, (agencia, conta))
     resultado = cur.fetchone()
     return resultado[0] if resultado else None
