@@ -134,5 +134,5 @@ def buscar_cep_route():
     return jsonify(resultado)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
     
