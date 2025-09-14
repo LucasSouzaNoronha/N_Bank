@@ -72,6 +72,7 @@ def acessar():
             session['agencia'] = json_input.get('agencia')
             session['conta'] = json_input.get('conta')
             session['senha'] = json_input.get('senha')
+            session['nome_cliente'] = resultado_dict.get('nome_cliente')
         
         return resultado
 

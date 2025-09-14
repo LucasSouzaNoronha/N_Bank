@@ -132,7 +132,8 @@ def acessar(entrada_json):
         conta_obj = cl.Conta(agencia, conta, senha)
         acesso = conta_obj.acessar(conta, cur)
         if acesso:
-            return json.dumps({"status": "sucesso", "mensagem": "Acesso autorizado."})
+            nome_cliente = db.pesquisar_nome_cliente(cur, agencia, conta)
+            return json.dumps({"status": "sucesso", "mensagem": "Acesso autorizado.", "nome_cliente": nome_cliente})
         else:
             return json.dumps({"status": "erro", "mensagem": "Acesso negado."})
     except Exception as erro:
