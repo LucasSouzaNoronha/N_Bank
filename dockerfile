@@ -20,4 +20,4 @@ COPY . .
 EXPOSE 5000
 
 # Comando para iniciar sua aplicação
-CMD ["python", "site_nbank.py", "--host=0.0.0.0", "--port=5000"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "site_nbank:app"]
