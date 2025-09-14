@@ -87,6 +87,7 @@ def logout():
     session.pop('agencia', None)
     session.pop('conta', None)
     session.pop('senha', None)
+    session.pop('nome_cliente', None)
     return redirect(url_for('home'))
 
 @app.route('/transferencia', methods=['GET', 'POST'])
