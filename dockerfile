@@ -18,6 +18,7 @@ COPY . .
 
 # Expõe a porta
 EXPOSE 5000
+EXPOSE 5432
 
 # Comando para iniciar sua aplicação
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "site_nbank:app"]
+CMD ["gunicorn", "--max-requests", "200", "--bind", "0.0.0.0:5000", "site_nbank:app"]
