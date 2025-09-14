@@ -62,7 +62,13 @@ def conta():
 @app.route('/acessar', methods=['GET', 'POST'])
 def acessar():
     if request.method == 'GET':
-        return render_template('acessar.html')
+            conn = banco.conectar()
+            cur = conn.cursor()
+            cur.execute("SELECT numero_agencia, municipio FROM agencias")
+            agencias = cur.fetchall()
+            cur.close()
+            conn.close()
+            return render_template('acessar.html', agencias=agencias)
     elif request.method == 'POST':
         json_input = request.get_json() or {}
         resultado = main.acessar(json_input)
