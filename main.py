@@ -13,7 +13,7 @@ def correntista(entrada_json):
         if ausentes:
             return json.dumps({"status": "erro", "mensagem": f"Campos obrigatórios ausentes: {', '.join(ausentes)}"})
         cpf = dados.get("cpf")
-        cpf_valido = db.valida_cpf(cpf)
+        cpf_valido = True #db.valida_cpf(cpf)
         if cpf_valido is True:
             cliente = cl.Cliente(
                 int(cpf),
