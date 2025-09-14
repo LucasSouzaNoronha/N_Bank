@@ -71,6 +71,8 @@ def agencia(entrada_json):
             int(dados.get("cep"))
         )
         agencia_obj.salvar(conn, cur)
+        conn.commit()
+        conn.close()
         return json.dumps({"status": "sucesso", "mensagem": "Agência salva com sucesso.", "numero_agencia": numero_agencia})
     except Exception as erro:
         return json.dumps({"status": "erro", "mensagem": str(erro)})
@@ -102,6 +104,8 @@ def conta(entrada_json):
             int(dados.get("cpf"))
         )
         conta_obj.salvar(conn, cur)
+        conn.commit()
+        conn.close()
         return json.dumps({"status": "sucesso", "mensagem": "Conta salva com sucesso.", "numero_conta": numero_conta})
     except Exception as erro:
         return json.dumps({"status": "erro", "mensagem": str(erro)})
